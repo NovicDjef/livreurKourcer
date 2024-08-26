@@ -100,7 +100,7 @@ const OrderHistory = () => {
     } else {
       // Fallback si on ne peut pas revenir en arrière
       // Par exemple, naviguer vers un écran d'accueil
-      navigation.navigate('Home');
+      navigation.navigate('index');
     }
   };
 

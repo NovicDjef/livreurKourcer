@@ -87,40 +87,6 @@ export default function Layout() {
           }}
         />
         <Drawer.Screen
-          name="profile"
-          options={{
-            drawerLabel: 'Profile',
-            drawerIcon: () => (
-              <Ionicons
-                name="person"
-                size={26}
-                style={{
-                  color: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              />
-            ),
-          }}
-        />
-        <Drawer.Screen
-          name="about"
-          options={{
-            drawerLabel: 'A propos',
-            drawerIcon: () => (
-              <Ionicons
-                name="trail-sign"
-                size={26}
-                style={{
-                  color: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              />
-            ),
-          }}
-        />
-        <Drawer.Screen
           name="orderHistory"
           options={{
             drawerLabel: 'Order History',
@@ -161,6 +127,23 @@ export default function Layout() {
             drawerIcon: () => (
               <Ionicons
                 name="cog"
+                size={26}
+                style={{
+                  color: 'white',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              />
+            ),
+          }}
+        />
+        <Drawer.Screen
+          name="about"
+          options={{
+            drawerLabel: 'A propos',
+            drawerIcon: () => (
+              <Ionicons
+                name="trail-sign"
                 size={26}
                 style={{
                   color: 'white',

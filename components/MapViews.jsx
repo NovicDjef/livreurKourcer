@@ -56,6 +56,8 @@ export default function MapViews() {
   const bottomSheetRef = useRef(null);
   const navigation = useNavigation();
   const snapPoints = useMemo(() => ['25%', '50%'], []);
+  const [routeCoordinates, setRouteCoordinates] = useState([]);
+  const [duration, setDuration] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -91,6 +93,25 @@ export default function MapViews() {
       }
     })();
   }, []);
+
+  const fetchDirections = async (startLat, startLng, endLat, endLng) => {
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/directions/json?origin=${startLat},${startLng}&destination=${endLat},${endLng}&key=VOTRE_CLE_API_GOOGLE`
+      );
+      const data = await response.json();
+      if (data.routes.length) {
+        const route = data.routes[0];
+        const points = route.overview_polyline.points;
+        const decodedPoints = decodePolyline(points);
+        setRouteCoordinates(decodedPoints);
+        setDuration(route.legs[0].duration.text);
+        setDistance(route.legs[0].distance.text);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération de l'itinéraire:", error);
+    }
+  };
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371; // Rayon de la Terre en km
@@ -191,13 +212,13 @@ export default function MapViews() {
               <Text style={styles.marchesButtonText}>MARCHÉS</Text>
               <Text style={styles.marchesCount}>0</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.closeButton}>
+            <TouchableOpacity onPress={() => navigation.navigate("notifications")} style={styles.closeButton}>
             <Ionicons style={styles.topBarText} name="notifications" size={24} color="white" />
             </TouchableOpacity>
           </View>
         </View>
       </SafeAreaView>
-      <BottomSheet ref={bottomSheetRef} index={-1} snapPoints={snapPoints} enablePanDownToClose>
+      {/* <BottomSheet ref={bottomSheetRef} index={-1} snapPoints={snapPoints} enablePanDownToClose>
         <View style={styles.bottomSheetContent}>
           {selectedPoint && (
             <>
@@ -208,6 +229,29 @@ export default function MapViews() {
                 {'\n'}
                 Longitude: {selectedPoint.coordinate.longitude.toFixed(4)}
               </Text>
+            </>
+          )}
+        </View>
+      </BottomSheet> */}
+      <BottomSheet ref={bottomSheetRef} index={-1} snapPoints={snapPoints} enablePanDownToClose>
+        <View style={styles.bottomSheetContent}>
+          {selectedPoint && (
+            <>
+              <Text style={styles.bottomSheetTitle}>{selectedPoint.title}</Text>
+              <View style={styles.infoRow}>
+                <Ionicons name="time-outline" size={24} color={COLORS.primary} />
+                <Text style={styles.infoText}>{duration || 'Calcul en cours...'}</Text>
+              </View>
+              <View style={styles.infoRow}>
+                <Ionicons name="location-outline" size={24} color={COLORS.primary} />
+                <Text style={styles.infoText}>{distance || 'Calcul en cours...'}</Text>
+              </View>
+              <TouchableOpacity style={styles.callButton} 
+              //</>onPress={handleCall}
+              >
+                <Ionicons name="call-outline" size={24} color="white" />
+                <Text style={styles.callButtonText}>Appeler</Text>
+              </TouchableOpacity>
             </>
           )}
         </View>
@@ -294,6 +338,41 @@ const styles = StyleSheet.create({
   markerIcon :{
     width: 24,
     height: 24
-  }
+  },
+
+
+  bottomSheetContent: {
+    flex: 1,
+    padding: 16,
+  },
+  bottomSheetTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  infoText: {
+    marginLeft: 8,
+    fontSize: 16,
+  },
+  callButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.primary,
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 16,
+  },
+  callButtonText: {
+    color: 'white',
+    marginLeft: 8,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 
 });

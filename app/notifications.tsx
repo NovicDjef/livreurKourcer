@@ -113,7 +113,9 @@ const Notifications = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      style={styles.container}>
       <View style={{ flexDirection: 'row' }}>
         <TouchableOpacity
           onPress={handleGoBack}
@@ -127,7 +129,6 @@ const Notifications = () => {
         renderItem={({ item }) => <NotificationItem item={item} onDelete={onDelete} />}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContainer}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
     </ScrollView>
   );
